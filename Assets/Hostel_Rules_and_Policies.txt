@@ -1,0 +1,59 @@
+================================================================================
+DAYANANDA SAGAR ACADEMY OF TECHNOLOGY AND MANAGEMENT (DSATM), BANGALORE
+HOSTEL RULES, REGULATIONS, SAFETY SOPS AND RESIDENTIAL POLICY MANUAL
+================================================================================
+
+1. GENERAL HOSTEL OVERVIEW & ADMINISTRATION
+--------------------------------------------------------------------------------
+Dayananda Sagar Academy of Technology and Management (DSATM) provides on-campus hostel accommodation for undergraduate and postgraduate students. 
+- Block A (Subhash Chandra Bose Hall): Boys Hostel (Capacity: 120 rooms across 4 floors).
+- Block B (Kalpana Chawla Hall): Girls Hostel (Capacity: 120 rooms across 4 floors).
+- Chief Warden Contact: +91-9876543210 / warden.chief@dsatm.edu.in
+- Block A Warden Contact: +91-9876543211 / warden.blocka@dsatm.edu.in
+- Block B Warden Contact: +91-9876543212 / warden.blockb@dsatm.edu.in
+- Hostel Medical Center & Ambulance Emergency: +91-9876543999 (24/7 Available)
+
+2. TIMINGS & CURFEW RULES
+--------------------------------------------------------------------------------
+- Weekday Curfew (Monday - Friday): All residents must return to their respective hostel blocks by 9:00 PM. Main gates are locked at 9:00 PM.
+- Weekend Curfew (Saturday - Sunday & Public Holidays): Residents must return by 9:30 PM.
+- Morning Gate Opening: Main hostel gates open at 6:00 AM.
+- Late Night Entry / Curfew Breach: Entry between 9:01 PM and 10:00 PM requires written approval from the Warden and incurs a Late Fine of Rs. 200. Entry after 10:00 PM without prior written outpass is flagged as a Serious Anomaly & Parent Notification is automatically triggered.
+- Overstay Rule: Students who check out for local outings and fail to return by the specified expected return time are flagged in the Real-Time Occupancy System as "OVERSTAY_ANOMALY".
+
+3. OUTPASS & LEAVE APPLICATION PROCEDURE
+--------------------------------------------------------------------------------
+- Local Outing (Day Pass): Students going out for local errands within Bangalore between 6:00 AM and 9:00 PM must log out at the Gate Terminal using their QR Student ID or USN. No prior approval needed for daytime local outings.
+- Night Outpass / Weekend Home Leave:
+  1. Leave application must be submitted via the DSATM Hostel Portal at least 24 hours prior to departure.
+  2. Details required: Purpose, Destination Address, Parent/Guardian Contact, Departure Date/Time, Expected Return Date/Time.
+  3. Parent/Guardian confirmation via SMS/Call verification is mandatory for approval.
+  4. Warden approval status must show "APPROVED" on the portal before physical check-out at the gate.
+  5. Returning from leave requires immediate check-in logging at the hostel main gate terminal.
+
+4. MESS TIMINGS & FOOD POLICY
+--------------------------------------------------------------------------------
+- Breakfast: 7:30 AM – 9:00 AM
+- Lunch: 12:30 PM – 2:15 PM
+- Evening Snacks & Tea: 5:00 PM – 6:00 PM
+- Dinner: 7:30 PM – 9:15 PM
+- Mess Rules: Taking mess utensils/food to hostel rooms is strictly prohibited, except for sick students with written permission from the Medical Officer or Warden. Wastage of food is strictly discouraged.
+
+5. SAFETY, DISCIPLINE & ANTI-RAGGING SOPS
+--------------------------------------------------------------------------------
+- Ragging Policy: ZERO TOLERANCE FOR RAGGING. Any involvement in physical, mental, or verbal harassment of junior students will lead to immediate expulsion from the institute and registration of an FIR under the Anti-Ragging Act.
+- Prohibited Items: Possession or consumption of alcohol, tobacco, narcotics, weapons, flammable liquids, electric heaters, induction stoves, or iron boxes in hostel rooms is strictly prohibited. Fines up to Rs. 5,000 and suspension apply.
+- Visitors Policy: Parents and official guardians are permitted to visit in the Hostel Visitor Lounge between 4:00 PM and 7:00 PM on weekdays and 10:00 AM to 6:00 PM on weekends. No visitors (including parents) are allowed inside student rooms without written permission from the Chief Warden.
+- Silence Hours: 10:00 PM to 6:00 AM. High-volume music, noisy group gatherings, or disruptive behavior during silence hours is strictly prohibited.
+
+6. ROOM ALLOCATION & MAINTENANCE
+--------------------------------------------------------------------------------
+- Students are responsible for the cleanliness and maintenance of furniture (Bed, Study Table, Chair, Cupboard) allocated to them.
+- Any damage to hostel property will be recovered from the security deposit of the responsible student(s).
+- Maintenance complaints regarding electrical fittings, plumbing, or internet Wi-Fi should be registered through the Maintenance Portal or reported to the Assistant Warden. Repairs are attended to within 24 hours.
+
+7. EMERGENCY & SOS PROTOCOLS
+--------------------------------------------------------------------------------
+- Medical Emergency: In case of sudden illness, injury, or medical crisis, notify the floor warden immediately or press the Emergency SOS button in the Hostel App. Ambulance will convey student to Dayananda Sagar Hospital.
+- Fire Safety: Fire extinguishers and evacuation maps are installed on each floor near staircase exits. In case of fire alarm, assemble at the Main Football Ground Assembly Area.
+- Unauthorized Entry / Intruder Alert: Report unrecognized persons without visitor passes immediately to Security Guard (+91-9876543888).

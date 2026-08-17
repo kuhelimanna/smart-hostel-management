@@ -1,0 +1,4 @@
+.env
+.venv
+rag_service_db
+__pycache__

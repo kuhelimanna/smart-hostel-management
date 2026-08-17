@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSATM Smart Hostel Management & Real-Time Occupancy System</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body class="dark-theme">
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+        <div class="brand-container">
+            <div class="logo-icon">
+                <i class="fa-solid fa-building-user"></i>
+            </div>
+            <div class="brand-text">
+                <h1>DSATM <span>Smart Hostel</span></h1>
+                <p>Digital Occupancy & Safety Agentic Platform</p>
+            </div>
+        </div>
+
+        <div class="header-center">
+            <nav class="nav-tabs">
+                <button class="nav-btn active" data-tab="dashboard-tab"><i class="fa-solid fa-chart-pie"></i> Dashboard</button>
+                <button class="nav-btn" data-tab="rooms-tab"><i class="fa-solid fa-door-open"></i> Room Grid</button>
+                <button class="nav-btn" data-tab="gate-tab"><i class="fa-solid fa-qrcode"></i> Gate Terminal</button>
+                <button class="nav-btn" data-tab="students-tab"><i class="fa-solid fa-users"></i> Students & Leaves</button>
+                <button class="nav-btn" data-tab="safety-tab"><i class="fa-solid fa-shield-halved"></i> Safety & Anomalies <span class="badge alert-badge" id="header-alert-count">0</span></button>
+            </nav>
+        </div>
+
+        <div class="header-actions">
+            <div class="status-indicator online">
+                <span class="pulse-dot"></span> API & MCP Online
+            </div>
+            <button class="icon-btn" id="ai-toggle-btn" title="AI Hostel Assistant">
+                <i class="fa-solid fa-robot"></i>
+                <span class="ai-sparkle"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <main class="app-content">
+        <!-- 1. DASHBOARD TAB -->
+        <section id="dashboard-tab" class="tab-pane active">
+            <!-- KPI Summary Cards Grid -->
+            <div class="kpi-grid">
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon total"><i class="fa-solid fa-users"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Total Residents</span>
+                        <h2 id="kpi-total-students">--</h2>
+                        <span class="kpi-sub">Across Block A & Block B</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon present"><i class="fa-solid fa-house-user"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Present in Hostel</span>
+                        <h2 id="kpi-in-hostel">--</h2>
+                        <span class="kpi-sub text-success" id="kpi-present-pct">--% Present</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon outgoing"><i class="fa-solid fa-person-walking-arrow-right"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Checked Out (Outings)</span>
+                        <h2 id="kpi-checked-out">--</h2>
+                        <span class="kpi-sub text-warning">Local errands / Outings</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card glass-card">
+                    <div class="kpi-icon leave"><i class="fa-solid fa-plane-departure"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">On Home Leave</span>
+                        <h2 id="kpi-on-leave">--</h2>
+                        <span class="kpi-sub">Approved Outpass</span>
+                    </div>
+                </div>
+
+                <div class="kpi-card glass-card alert-card">
+                    <div class="kpi-icon anomaly"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                    <div class="kpi-info">
+                        <span class="kpi-label">Active Safety Alerts</span>
+                        <h2 id="kpi-anomalies">--</h2>
+                        <span class="kpi-sub text-danger">Overdue / Curfew breaches</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Middle Section: Live Occupancy Breakdown & Quick Actions -->
+            <div class="dashboard-middle">
+                <!-- Block Occupancy Progress Bars -->
+                <div class="glass-card occupancy-widget">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-chart-bar"></i> Live Block Occupancy Overview</h3>
+                        <button class="btn btn-sm btn-outline" id="refresh-dashboard-btn"><i class="fa-solid fa-rotate-right"></i> Refresh</button>
+                    </div>
+                    
+                    <div class="block-bar-group">
+                        <div class="block-bar-item">
+                            <div class="block-title-row">
+                                <span><i class="fa-solid fa-mars"></i> Block A (Boys Hostel)</span>
+                                <strong id="block-a-stat">-- / -- Beds Occupied</strong>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill fill-boys" id="block-a-progress" style="width: 0%;"></div>
+                            </div>
+                        </div>
+
+                        <div class="block-bar-item">
+                            <div class="block-title-row">
+                                <span><i class="fa-solid fa-venus"></i> Block B (Girls Hostel)</span>
+                                <strong id="block-b-stat">-- / -- Beds Occupied</strong>
+                            </div>
+                            <div class="progress-track">
+                                <div class="progress-fill fill-girls" id="block-b-progress" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Safety & Gate Actions -->
+                <div class="glass-card quick-actions-widget">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-bolt"></i> Operational Quick Actions</h3>
+                    </div>
+                    <div class="action-buttons-grid">
+                        <button class="action-btn scan-btn" id="quick-scan-btn">
+                            <i class="fa-solid fa-qrcode"></i>
+                            <span>Scan Gate QR</span>
+                        </button>
+                        <button class="action-btn leave-btn" id="quick-leave-btn">
+                            <i class="fa-solid fa-file-signature"></i>
+                            <span>Apply Outpass</span>
+                        </button>
+                        <button class="action-btn sos-btn" id="quick-sos-btn">
+                            <i class="fa-solid fa-bell"></i>
+                            <span>Trigger SOS</span>
+                        </button>
+                        <button class="action-btn report-btn" id="quick-report-btn">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span>Hostel Report</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Movement Logs Ticker -->
+            <div class="glass-card movements-preview-widget">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-clock-rotate-left"></i> Live Movement Logs Feed</h3>
+                    <span class="live-tag"><span class="blink-dot"></span> LIVE</span>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table" id="recent-movements-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>USN</th>
+                                <th>Student Name</th>
+                                <th>Block & Room</th>
+                                <th>Direction</th>
+                                <th>Destination</th>
+                                <th>Expected Return</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="movements-tbody">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ROOM GRID TAB -->
+        <section id="rooms-tab" class="tab-pane">
+            <div class="tab-header">
+                <div class="tab-title">
+                    <h2>Hostel Room Occupancy Visualizer</h2>
+                    <p>Real-time visual map of all hostel rooms, capacities, and occupants.</p>
+                </div>
+                <div class="filter-controls">
+                    <div class="btn-group" id="block-filter-group">
+                        <button class="btn btn-tab active" data-block="all">All Blocks</button>
+                        <button class="btn btn-tab" data-block="Block A">Block A (Boys)</button>
+                        <button class="btn btn-tab" data-block="Block B">Block B (Girls)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend Bar -->
+            <div class="legend-bar">
+                <span class="legend-item"><span class="dot vacant"></span> Vacant (0/2)</span>
+                <span class="legend-item"><span class="dot partial"></span> Partially Occupied (1/2)</span>
+                <span class="legend-item"><span class="dot full"></span> Full (2/2)</span>
+                <span class="legend-item"><span class="dot maintenance"></span> Maintenance</span>
+            </div>
+
+            <!-- Room Cards Container -->
+            <div class="room-grid" id="room-grid-container">
+                <!-- Injected by JS -->
+            </div>
+        </section>
+
+        <!-- 3. GATE TERMINAL TAB -->
+        <section id="gate-tab" class="tab-pane">
+            <div class="gate-container">
+                <!-- Left Terminal Scanner -->
+                <div class="glass-card gate-scanner-card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-gate"></i> Gate Entry / Exit Terminal</h3>
+                        <span class="badge badge-primary">QR / Manual</span>
+                    </div>
+
+                    <form id="gate-action-form" class="gate-form">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-id-card"></i> Student USN or QR Code</label>
+                            <div class="input-with-icon">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="gate-usn-input" placeholder="e.g. 1DS21CS045" required>
+                                <button type="button" class="btn btn-sm btn-primary" id="lookup-usn-btn">Verify</button>
+                            </div>
+                        </div>
+
+                        <!-- Verified Student Profile Card Preview -->
+                        <div class="student-preview-box hidden" id="student-preview-box">
+                            <div class="preview-avatar"><i class="fa-solid fa-user-graduate"></i></div>
+                            <div class="preview-details">
+                                <h4 id="prev-name">Rahul Sharma</h4>
+                                <p id="prev-usn-dept">1DS21CS045 • CSE 3rd Year</p>
+                                <p id="prev-room">Room A-101 (Block A - Boys)</p>
+                                <span class="badge" id="prev-status">IN_HOSTEL</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-location-dot"></i> Outing Destination (For Check-Out)</label>
+                            <input type="text" id="gate-dest-input" placeholder="e.g. Jayanagar Market, Library, Gym">
+                        </div>
+
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-clock"></i> Expected Return Time Frame</label>
+                            <select id="gate-duration-select">
+                                <option value="1">1 Hour (Quick errand)</option>
+                                <option value="3" selected>3 Hours (Standard Outing)</option>
+                                <option value="6">6 Hours (Half day)</option>
+                                <option value="12">12 Hours (Full Day)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-actions-dual">
+                            <button type="button" class="btn btn-success btn-lg" id="checkout-act-btn">
+                                <i class="fa-solid fa-arrow-right-from-bracket"></i> Check OUT
+                            </button>
+                            <button type="button" class="btn btn-primary btn-lg" id="checkin-act-btn">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i> Check IN
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Side: Simulated QR Scanner & Quick Scan Cards -->
+                <div class="glass-card qr-scanner-card">
+                    <div class="card-header">
+                        <h3><i class="fa-solid fa-camera"></i> Live QR ID Scanner Simulation</h3>
+                    </div>
+                    <div class="qr-viewfinder">
+                        <div class="laser-scanner"></div>
+                        <i class="fa-solid fa-qrcode qr-placeholder-icon"></i>
+                        <p>Position Student ID Pass within frame</p>
+                    </div>
+                    <div class="quick-pass-simulator">
+                        <span class="sim-label">Quick Scan Student Passes:</span>
+                        <div class="sim-buttons">
+                            <button class="btn btn-sm btn-outline sim-student-btn" data-usn="1DS21CS045">Rahul (Block A)</button>
+                            <button class="btn btn-sm btn-outline sim-student-btn" data-usn="1DS21CS015">Ananya (Block B)</button>
+                            <button class="btn btn-sm btn-outline sim-student-btn" data-usn="1DS22IS012">Karthik (Block A)</button>
+                            <button class="btn btn-sm btn-outline sim-student-btn" data-usn="1DS22EC018">Sneha (Block B)</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. STUDENTS & LEAVES TAB -->
+        <section id="students-tab" class="tab-pane">
+            <div class="tab-header">
+                <div class="tab-title">
+                    <h2>Hostel Residents & Leave Management</h2>
+                    <p>Manage student profiles, room allocations, and outpass requests.</p>
+                </div>
+                <div class="header-btn-row">
+                    <button class="btn btn-primary" id="open-add-student-modal"><i class="fa-solid fa-user-plus"></i> Add New Resident</button>
+                    <button class="btn btn-success" id="open-leave-modal"><i class="fa-solid fa-calendar-plus"></i> Submit Leave Request</button>
+                </div>
+            </div>
+
+            <!-- Student Directory Table -->
+            <div class="glass-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-address-book"></i> Resident Directory</h3>
+                    <div class="search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="student-search-input" placeholder="Search by name, USN, room...">
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>USN</th>
+                                <th>Student Name</th>
+                                <th>Dept & Year</th>
+                                <th>Block & Room</th>
+                                <th>Contact</th>
+                                <th>Guardian Contact</th>
+                                <th>Current Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="students-tbody">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Leave Requests Section -->
+            <div class="glass-card margin-top-lg">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-envelope-open-text"></i> Leave & Outpass Applications</h3>
+                </div>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Leave ID</th>
+                                <th>Student Name (USN)</th>
+                                <th>Reason</th>
+                                <th>Destination</th>
+                                <th>Dates</th>
+                                <th>Parent Verified</th>
+                                <th>Status</th>
+                                <th>Warden Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaves-tbody">
+                            <!-- Injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SAFETY & ANOMALIES TAB -->
+        <section id="safety-tab" class="tab-pane">
+            <div class="tab-header">
+                <div class="tab-title">
+                    <h2>Safety Monitoring & Anomaly Center</h2>
+                    <p>Real-time tracking of overstayed students, curfew breaches, and safety alerts.</p>
+                </div>
+                <button class="btn btn-danger" id="trigger-sos-modal-btn"><i class="fa-solid fa-triangle-exclamation"></i> Raise Emergency SOS</button>
+            </div>
+
+            <div class="glass-card alert-section">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-bell"></i> Active Safety Alerts & Anomalies</h3>
+                    <span class="badge alert-badge" id="safety-active-count">0 Active</span>
+                </div>
+                <div class="alerts-list" id="safety-alerts-list">
+                    <!-- Injected by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- FLOATING AI ASSISTANT MODAL / DRAWER -->
+    <div class="ai-chat-drawer hidden" id="ai-chat-drawer">
+        <div class="ai-header">
+            <div class="ai-title">
+                <i class="fa-solid fa-robot"></i>
+                <div>
+                    <h3>DSATM Hostel AI Assistant</h3>
+                    <span class="ai-subtitle"><i class="fa-solid fa-sparkles"></i> Powered by RAG & FastMCP</span>
+                </div>
+            </div>
+            <button class="close-btn" id="close-ai-drawer"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="ai-body" id="ai-messages-container">
+            <div class="ai-msg bot-msg">
+                <div class="msg-avatar"><i class="fa-solid fa-robot"></i></div>
+                <div class="msg-content">
+                    <p>Hello! I am your <strong>DSATM Hostel AI Assistant</strong>. I can answer policy questions using <strong>RAG</strong> or query live database stats using <strong>MCP</strong> tools.</p>
+                    <div class="quick-prompts">
+                        <button class="prompt-chip" data-query="What is the curfew time on weekdays and weekends?">Curfew Timings?</button>
+                        <button class="prompt-chip" data-query="How many students are currently checked out from Block A?">Block A Outings?</button>
+                        <button class="prompt-chip" data-query="What is the leave application procedure?">Leave Rules?</button>
+                        <button class="prompt-chip" data-query="Check out student 1DS21CS045 to Library for 3 hours">Check Out Rahul</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-footer">
+            <form id="ai-chat-form">
+                <input type="text" id="ai-input" placeholder="Ask about hostel rules, room status, checkouts..." required>
+                <button type="submit" class="btn btn-primary" id="ai-send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ADD STUDENT -->
+    <div class="modal-overlay hidden" id="add-student-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus"></i> Register New Resident</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <form id="add-student-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Student USN</label>
+                        <input type="text" id="new-usn" placeholder="1DS23CS101" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="new-name" placeholder="Varun Kumar" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Department</label>
+                        <input type="text" id="new-dept" placeholder="CSE / ISE / ECE" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Year</label>
+                        <select id="new-year">
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year" selected>3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Block</label>
+                        <select id="new-block">
+                            <option value="Block A - Boys">Block A - Boys</option>
+                            <option value="Block B - Girls">Block B - Girls</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Room Number</label>
+                        <input type="text" id="new-room" placeholder="A-101" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Student Phone</label>
+                        <input type="text" id="new-phone" placeholder="+91 98765 43210" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Guardian Phone</label>
+                        <input type="text" id="new-gphone" placeholder="+91 98765 99999" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Student</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: SUBMIT LEAVE APPLICATION -->
+    <div class="modal-overlay hidden" id="leave-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-calendar-plus text-success"></i> Submit Outpass / Leave Request</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <form id="add-leave-form">
+                <div class="form-group">
+                    <label>Student USN</label>
+                    <input type="text" id="leave-usn" placeholder="e.g. 1DS21CS015" required>
+                </div>
+                <div class="form-group">
+                    <label>Reason for Leave</label>
+                    <input type="text" id="leave-reason" placeholder="Family function / Medical visit / Internship" required>
+                </div>
+                <div class="form-group">
+                    <label>Destination Address</label>
+                    <input type="text" id="leave-dest" placeholder="Mysore, Karnataka / Parent Home" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="leave-start" required>
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="leave-end" required>
+                    </div>
+                </div>
+                <div class="form-group checkbox-group">
+                    <label>
+                        <input type="checkbox" id="leave-parent-verified" checked> Parent / Guardian Contacted & Verified
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-success">Submit Leave Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: RAISE EMERGENCY SOS ALERT -->
+    <div class="modal-overlay hidden" id="sos-modal">
+        <div class="modal-card border-danger">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-triangle-exclamation text-danger"></i> Raise Emergency SOS Safety Alert</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <form id="add-sos-form">
+                <div class="form-group">
+                    <label>Student USN</label>
+                    <input type="text" id="sos-usn" placeholder="e.g. 1DS21CS045" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Alert Type</label>
+                        <select id="sos-type">
+                            <option value="EMERGENCY_SOS" selected>Emergency SOS</option>
+                            <option value="CURFEW_BREACH">Curfew Breach</option>
+                            <option value="UNAUTHORIZED_ENTRY">Unauthorized Entry</option>
+                            <option value="MEDICAL_EMERGENCY">Medical Crisis</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Severity</label>
+                        <select id="sos-severity">
+                            <option value="CRITICAL" selected>Critical</option>
+                            <option value="HIGH">High</option>
+                            <option value="MEDIUM">Medium</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Emergency Message / Details</label>
+                    <textarea id="sos-message" rows="3" placeholder="Describe emergency location and situation for Warden response..." required></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline close-modal-btn">Cancel</button>
+                    <button type="submit" class="btn btn-danger"><i class="fa-solid fa-bell"></i> Trigger Alert Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: ROOM DETAIL VIEW -->
+    <div class="modal-overlay hidden" id="room-detail-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="room-modal-title"><i class="fa-solid fa-door-open"></i> Room Details</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body" id="room-modal-body">
+                <!-- Injected dynamically -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline close-modal-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ADMINISTRATIVE REPORT -->
+    <div class="modal-overlay hidden" id="report-modal">
+        <div class="modal-card modal-lg">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-file-lines text-primary"></i> Administrative Hostel Summary Report</h3>
+                <button class="close-modal-btn">&times;</button>
+            </div>
+            <div class="modal-body report-body" id="report-modal-body">
+                <div class="text-center p-4"><i class="fa-solid fa-spinner fa-spin"></i> Generating administrative report...</div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline close-modal-btn">Close</button>
+                <button type="button" class="btn btn-primary" onclick="window.print()"><i class="fa-solid fa-print"></i> Print Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification System -->
+    <div id="toast-container"></div>
+
+    <!-- JS Script -->
+    <script src="/static/app.js"></script>
+</body>
+</html>
